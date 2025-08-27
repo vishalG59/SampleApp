@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recipehub_error_message_network_not_available">Cannot connect to the network. Please check your connection.</string>
+    <string name="recipehub_error_message_authentication_failed">Authentication failed for RecipeHub. Please log in again.</string>
+    <string name="recipehub_error_message_access_denied">You don\'t have permission to access this RecipeHub feature.</string>
+    <string name="recipehub_error_message_resource_not_found">The requested recipe or item could not be found in RecipeHub.</string>
+    <string name="recipehub_error_message_server_error">A server error occurred while using RecipeHub. Please try again later.</string>
+    <string name="recipehub_error_message_invalid_user_input">There was an issue with the input provided in RecipeHub.</string>
+    <string name="recipehub_error_message_data_processing">There was an issue processing data within RecipeHub.</string>
+    <string name="recipehub_error_message_request_conflict">There was a conflict with an existing recipe item in RecipeHub.</string>
+    <string name="recipehub_error_message_unknown">An unknown error occurred in RecipeHub. Please try again.</string>
+    <string name="recipehub_empty_state_screen_title_message">No Recipes Found!</string>
+    <string name="recipehub_empty_state_screen_description_message">Looks like recipes details is not available at the moment. Please try after some time.</string>
+    <string name="recipehub_recipelist_screen_title">Recipe Hub</string>
+    <string name="recipehub_recipe_details_screen_title">Recipe Details</string>
+    <string name="recipehub_error_unexpected_exception_message">An unexpected error occurred: %1$s</string>
+    <string name="recipehub_error_unknown_failure">An unexpected error occurred. Please try again.</string>
+</resources>
