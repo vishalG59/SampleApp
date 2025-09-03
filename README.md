@@ -9,6 +9,13 @@ A Recipe App that displays a list of recipes and allows users to view detailed i
 This Recipe App follows a **clean architecture** with **MVVM** pattern, built using **Jetpack Compose** for the UI. The app is modularized into multiple layers and features for maintainability, scalability, and testability.
 
 ---
+## 📸 Screenshots
+
+Here’s the main screen of the app:
+<p float="left">
+<img src="screenshots/recipe_list_screen.png" width="300" />
+<img src="screenshots/recipe_description_screen.png" width="300" />
+</p>
 
 ## Architecture & Modules
 

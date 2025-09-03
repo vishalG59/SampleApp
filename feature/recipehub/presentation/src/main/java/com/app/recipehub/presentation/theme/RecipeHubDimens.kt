@@ -46,4 +46,6 @@ object RecipeHubDimens {
     // Nutritional Info Grid Specifics Dimensions
     val details_nutritional_info_row_spacing: Dp = CoreDimens.space_1_5x
     val details_section_divider_thickness: Dp = CoreDimens.divider_thickness_thin // 0.5dp
+    val recipe_card_padding: Dp = CoreDimens.elevation_small // 0.5dp
+    val recipe_card_padding_inner: Dp = CoreDimens.space_1x // 0.5dp
 }
