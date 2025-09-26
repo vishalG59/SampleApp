@@ -1,6 +1,6 @@
 # Recipe App
 
-A Recipe App that displays a list of recipes and allows users to view detailed information about any selected recipe.
+A Recipe App that displays a list of recipes and allows users to view detailed information about any selected recipe with full offline support using local caching.
 
 ---
 
@@ -8,12 +8,21 @@ A Recipe App that displays a list of recipes and allows users to view detailed i
 
 This Recipe App follows a **clean architecture** with **MVVM** pattern, built using **Jetpack Compose** for the UI. The app is modularized into multiple layers and features for maintainability, scalability, and testability.
 
+- **Offline Caching with Room Database**  
+  Recipes are cached locally using **Room**. On initial launch, recipes are fetched from the API and saved locally.
+  - If **online**, the app fetches fresh data from the API and updates the local cache.
+  - If **offline**, the app retrieves recipes from the local Room database.
+  - A **sticky header** notifies users when they are viewing **offline data**.
+  - If no data is available in the local cache (first-time use or cache cleared), an **error banner** is shown.
+
 ---
+
 ## 📸 Screenshots
 
 Here’s the main screen of the app:
 <p float="left">
 <img src="screenshots/recipe_list_screen.png" width="300" />
+<img src="screenshots/offline_cached_list_screen.png" width="300" />
 <img src="screenshots/recipe_description_screen.png" width="300" />
 </p>
 
@@ -26,7 +35,7 @@ Here’s the main screen of the app:
     - `core-network`: Networking and API-related code.
 
 - **Feature Modules**:
-  - `feature-recipehub:data`: Repositories, DTOs, and data sources for RecipeHub.
+  - `feature-recipehub:data`: Repositories, DTOs, Room Entities and data sources(Local & Remote) for RecipeHub.
   - `feature-recipehub:domain`: Use cases and domain models specific to RecipeHub.
   - `feature-recipehub:presentation`: UI screens and ViewModels using Jetpack Compose.
 
@@ -40,6 +49,7 @@ Here’s the main screen of the app:
 - **Jetpack Compose** - Modern declarative UI toolkit for Android.
 - **Jetpack Navigation Compose** - Navigation framework integrated with Compose.
 - **Retrofit & Gson** - Network client and JSON parsing.
+- **Room Database** – For local caching of recipes.
 - **Coil** - Image loading library optimized for Compose.
 - **Hilt** - Dependency Injection.
 - **Kotlin Flow** - Reactive streams for state management and asynchronous data.
