@@ -10,4 +10,7 @@ sealed interface RecipeListUiState {
     data class Success(val recipes: List<Recipe>) : RecipeListUiState
     data class Error(val message: String) : RecipeListUiState
     object Empty : RecipeListUiState
+
+    data class SuccessWithError(val recipes: List<Recipe>, val errorMessage: String) :
+        RecipeListUiState
 }

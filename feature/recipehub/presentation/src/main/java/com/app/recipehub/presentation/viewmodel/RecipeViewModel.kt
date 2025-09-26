@@ -45,9 +45,19 @@ class RecipeListViewModel @Inject constructor(
                         else
                             _recipeDataUiState.value = RecipeListUiState.Success(domainResult.data)
                     }
-                    is DomainResult.Failure -> _recipeDataUiState.value = RecipeListUiState.Error(
-                        resourceProvider.getString(domainResult.error.toDisplayMessageResourceId())
-                    )
+
+                    is DomainResult.Failure -> {
+                        if (domainResult.data != null) {
+                            _recipeDataUiState.value = RecipeListUiState.SuccessWithError(
+                                recipes = domainResult.data ?: emptyList(),
+                                errorMessage = resourceProvider.getString(domainResult.error.toDisplayMessageResourceId())
+                            )
+                        } else {
+                            _recipeDataUiState.value = RecipeListUiState.Error(
+                                resourceProvider.getString(domainResult.error.toDisplayMessageResourceId())
+                            )
+                        }
+                    }
                 }
             }.catch { throwable ->
                 Timber.e(throwable, "Exception in fetchRecipes flow")

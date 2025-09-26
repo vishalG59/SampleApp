@@ -69,4 +69,10 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.kapt)
     implementation(libs.hilt.navigation.compose)
+
+    //Room DB
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
+
 }

@@ -1,5 +1,6 @@
 package com.app.recipehub.data.mapper
 
+import com.app.recipehub.data.local.RecipeEntity
 import com.app.recipehub.data.remote.model.RecipeDTO
 import com.app.recipehub.domain.model.Difficulty
 import com.app.recipehub.domain.model.Ingredient
@@ -66,7 +67,10 @@ private fun mapDifficulty(dtoDifficulty: Int): Difficulty {
  * @param valueString The string to parse (e.g., "516 kcal").
  * @param defaultUnit The unit to assume if only a number is found.
  */
-private fun parseNutritionalValue(valueString: String?, defaultUnit: String = "g"): NutritionalValue? {
+private fun parseNutritionalValue(
+    valueString: String?,
+    defaultUnit: String = "g"
+): NutritionalValue? {
     if (valueString.isNullOrBlank()) return null
 
     // Regex to capture a number (integer or float) and an optional unit
@@ -87,4 +91,45 @@ private fun parseNutritionalValue(valueString: String?, defaultUnit: String = "g
         null
     }
 }
+
+fun Recipe.toEntity(): RecipeEntity {
+    return RecipeEntity(
+        id = id,
+        name = name,
+        headline = headline,
+        description = description,
+         calories = calories,
+         carbohydrates = carbohydrates,
+         fats = fats,
+         proteins = proteins,
+        imageUrl = imageUrl,
+        thumbnailUrl = thumbnailUrl,
+        countryCode = countryCode,
+        favoriteCount = favoriteCount,
+         difficulty = difficulty,
+         ingredients = ingredients,
+         applicableWeeks = applicableWeeks
+    )
+}
+
+fun RecipeEntity.toRecipe(): Recipe {
+    return Recipe(
+        id = id,
+        name = name,
+        headline = headline,
+        description = description,
+        calories = null,
+        carbohydrates = null,
+        fats = null,
+        proteins = null,
+        imageUrl = imageUrl,
+        thumbnailUrl = thumbnailUrl,
+        countryCode = countryCode,
+        favoriteCount = favoriteCount,
+        difficulty = Difficulty.EASY,
+        ingredients = listOf(Ingredient("test", true)),
+        applicableWeeks = listOf("", "")
+    )
+}
+
 

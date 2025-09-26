@@ -1,6 +1,10 @@
 package com.app.recipehub.data.di
 
+import android.app.Application
+import androidx.room.Room
 import com.app.network.dispatcher.AppDispatchers
+import com.app.recipehub.data.local.RecipeDao
+import com.app.recipehub.data.local.RecipeDatabase
 import com.app.recipehub.data.remote.api.RecipeApiService
 import com.app.recipehub.data.remote.source.RecipeRemoteDataSource
 import com.app.recipehub.data.remote.source.RecipeRemoteDataSourceImpl
@@ -37,8 +41,22 @@ object RecipeDataModule {
     @Singleton
     fun provideRecipeRepository(
         remoteDataSource: RecipeRemoteDataSource,
+        recipeDao: RecipeDao,
         dispatchers: AppDispatchers
     ): RecipeRepository {
-        return RecipeRepositoryImpl(remoteDataSource, dispatchers)
+        return RecipeRepositoryImpl(remoteDataSource, recipeDao,dispatchers,)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(app: Application): RecipeDatabase {
+        return Room.databaseBuilder(app, RecipeDatabase::class.java, "recipe_database")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    fun provideRecipeDao(db: RecipeDatabase): RecipeDao {
+        return db.recipeDao()
     }
 }

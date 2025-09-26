@@ -1,6 +1,14 @@
 package com.app.recipehub.presentation.ui.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,10 +16,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.recipehub.domain.model.Difficulty
@@ -19,10 +33,10 @@ import com.app.recipehub.domain.model.NutritionalValue
 import com.app.recipehub.domain.model.Recipe
 import com.app.recipehub.presentation.R
 import com.app.recipehub.presentation.state.RecipeListUiState
-import com.app.ui.component.AppEmptyStateView
 import com.app.recipehub.presentation.ui.component.RecipeCardView
 import com.app.recipehub.presentation.viewmodel.RecipeListViewModel
 import com.app.ui.component.AppCircularProgressIndicator
+import com.app.ui.component.AppEmptyStateView
 import com.app.ui.component.AppErrorBanner
 import com.app.ui.component.AppLayout
 
@@ -42,6 +56,18 @@ fun RecipeHubScreen(viewModel: RecipeListViewModel, onItemClick: (String) -> Uni
                     modifier = Modifier.padding(innerPadding),
                     recipes = (recipes.value as RecipeListUiState.Success).recipes,
                     onItemClick = onItemClick
+                )
+            }
+
+            is RecipeListUiState.SuccessWithError -> {
+                OfflineRecipeListView(
+                    modifier = Modifier.padding(innerPadding),
+                    recipes = (recipes.value as RecipeListUiState.SuccessWithError).recipes,
+                    onItemClick = onItemClick,
+                    message = (recipes.value as RecipeListUiState.SuccessWithError).errorMessage,
+                    onRetryClick = {
+                        viewModel.fetchRecipes()
+                    }
                 )
             }
 
@@ -69,6 +95,79 @@ fun RecipeHubScreen(viewModel: RecipeListViewModel, onItemClick: (String) -> Uni
         }
     }
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun OfflineRecipeListView(
+    modifier: Modifier = Modifier,
+    recipes: List<Recipe>,
+    isOffline: Boolean = true, // <-- Pass whether you're offline
+    onRetryClick: () -> Unit,
+    onItemClick: (String) -> Unit,
+    message: String
+) {
+    LazyColumn(modifier = modifier) {
+        // Sticky offline header
+        stickyHeader {
+            AnimatedVisibility(
+                visible = isOffline,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                OfflineHeader(onRetryClick = onRetryClick, message = message)
+            }
+        }
+
+        items(recipes) { recipe ->
+            RecipeCardView(
+                recipe = recipe,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp)
+                    .clickable { onItemClick(recipe.id) }
+            )
+        }
+    }
+}
+
+@Composable
+fun OfflineHeader(onRetryClick: () -> Unit, message: String) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.errorContainer)
+            .padding(horizontal = 10.dp, vertical = 6.dp),
+        tonalElevation = 4.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFFFEAEA))
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp), // spacing between text and button
+                maxLines = 2, // or 1, depending on your design
+                overflow = TextOverflow.Ellipsis
+            )
+
+            TextButton(
+                onClick = onRetryClick,
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Text("Retry")
+            }
+        }
+    }
+}
+
 
 
 @Composable

@@ -6,6 +6,7 @@ import com.app.network.dispatcher.AppDispatchers
 import com.app.network.resource.ErrorType
 import com.app.network.resource.NetworkResult
 import com.app.network.resource.mapThrowableToErrorResult
+import com.app.recipehub.data.local.RecipeDao
 import com.app.recipehub.data.mapper.toDomainModelList
 import com.app.recipehub.data.remote.model.RecipeDTO
 import com.app.recipehub.data.remote.source.RecipeRemoteDataSource
@@ -30,13 +31,16 @@ class RecipeRepositoryImplTest {
     @MockK
     private lateinit var appDispatchers: AppDispatchers
 
+    @MockK
+    private lateinit var recipeDao: RecipeDao
+
     private lateinit var repository: RecipeRepositoryImpl
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
         every { appDispatchers.io() } returns dispatcher
-        repository = RecipeRepositoryImpl(remoteDataSource, appDispatchers)
+        repository = RecipeRepositoryImpl(remoteDataSource = remoteDataSource, appDispatchers = appDispatchers, recipeDao = recipeDao)
     }
 
     @Test
@@ -44,7 +48,6 @@ class RecipeRepositoryImplTest {
         runTest {
             val apiList = listOf(recipeDTO)
             val domainList = apiList.toDomainModelList()
-
             coEvery { remoteDataSource.fetchRecipes() } returns NetworkResult.Success(apiList)
 
             val results = repository.getAllRecipes().toList()

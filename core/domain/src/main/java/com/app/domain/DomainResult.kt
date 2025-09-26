@@ -7,6 +7,8 @@ package com.app.domain
  */
 sealed class DomainResult<out D, out E : DomainError> {
     data class Success<out D>(val data: D) : DomainResult<D, Nothing>()
-    data class Failure<out E : DomainError>(val error: E) : DomainResult<Nothing, E>()
+    data class Failure<out D, out E : DomainError>(val error: E, val data: D? = null) :
+        DomainResult<D, E>()
+
     object Loading : DomainResult<Nothing, Nothing>()
 }

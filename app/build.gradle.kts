@@ -111,4 +111,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.kapt)
     implementation(libs.hilt.navigation.compose)
+
+    implementation(libs.kotlinx.metadata.jvm)
+    kapt(libs.kotlinx.metadata.jvm)
 }
