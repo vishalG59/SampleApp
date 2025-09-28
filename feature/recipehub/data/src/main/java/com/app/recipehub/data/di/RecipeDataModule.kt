@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.app.network.dispatcher.AppDispatchers
 import com.app.recipehub.data.local.RecipeDao
 import com.app.recipehub.data.local.RecipeDatabase
+import com.app.recipehub.data.local.source.RecipeLocalDataSource
+import com.app.recipehub.data.local.source.RecipeLocalDataSourceImpl
 import com.app.recipehub.data.remote.api.RecipeApiService
 import com.app.recipehub.data.remote.source.RecipeRemoteDataSource
 import com.app.recipehub.data.remote.source.RecipeRemoteDataSourceImpl
@@ -39,12 +41,18 @@ object RecipeDataModule {
 
     @Provides
     @Singleton
+    fun provideLocalDataSource(recipeDao: RecipeDao): RecipeLocalDataSource {
+        return RecipeLocalDataSourceImpl(recipeDao)
+    }
+
+    @Provides
+    @Singleton
     fun provideRecipeRepository(
         remoteDataSource: RecipeRemoteDataSource,
-        recipeDao: RecipeDao,
+        recipeLocalDataSource: RecipeLocalDataSource,
         dispatchers: AppDispatchers
     ): RecipeRepository {
-        return RecipeRepositoryImpl(remoteDataSource, recipeDao,dispatchers,)
+        return RecipeRepositoryImpl(remoteDataSource, recipeLocalDataSource, dispatchers)
     }
 
     @Provides

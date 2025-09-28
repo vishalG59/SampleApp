@@ -1,13 +1,12 @@
 package com.app.recipehub.data.repository
 
-import android.util.Log
 import com.app.data.toDomainError
 import com.app.domain.DomainError
 import com.app.domain.DomainResult
 import com.app.network.dispatcher.AppDispatchers
 import com.app.network.resource.NetworkResult
 import com.app.network.resource.mapThrowableToErrorResult
-import com.app.recipehub.data.local.RecipeDao
+import com.app.recipehub.data.local.source.RecipeLocalDataSource
 import com.app.recipehub.data.mapper.toDomainModelList
 import com.app.recipehub.data.mapper.toEntity
 import com.app.recipehub.data.mapper.toRecipe
@@ -29,7 +28,7 @@ import javax.inject.Inject
  */
 class RecipeRepositoryImpl @Inject constructor(
     private val remoteDataSource: RecipeRemoteDataSource,
-    private val recipeDao: RecipeDao,
+    private val localDataSource: RecipeLocalDataSource,
     private val appDispatchers: AppDispatchers
 ) : RecipeRepository {
     override fun getAllRecipes(): Flow<DomainResult<List<Recipe>, DomainError>> = flow {
@@ -37,15 +36,13 @@ class RecipeRepositoryImpl @Inject constructor(
         when (val result = remoteDataSource.fetchRecipes()) {
             is NetworkResult.Success -> {
                 val domainRecipeList = result.data.toDomainModelList()
-                recipeDao.insertRecipes(domainRecipeList.map { it.toEntity() })
+                localDataSource.insertRecipes(domainRecipeList.map { it.toEntity() })
                 emit(DomainResult.Success(domainRecipeList))
             }
 
             is NetworkResult.Error -> {
                 val domainError = result.toDomainError()
-                val localRecipeList = recipeDao.getAllRecipes()
-                Log.e("TEST_TAG", "Local List Size = "+localRecipeList.size)
-                Log.e("TEST_TAG", "Local List Size = ${localRecipeList}")
+                val localRecipeList = localDataSource.getAllRecipes()
                 if (localRecipeList.isNotEmpty()) {
                     emit(
                         DomainResult.Failure(
